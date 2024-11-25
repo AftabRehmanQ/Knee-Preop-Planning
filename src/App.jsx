@@ -4,6 +4,7 @@ import { OrbitControls, TransformControls } from '@react-three/drei';
 import { STLLoader } from 'three-stdlib';
 import { Vector3, BufferGeometry, LineBasicMaterial, Line, PlaneGeometry, MeshBasicMaterial, Mesh, DoubleSide } from 'three';
 import { Raycaster, Vector2 } from 'three';
+import { Stack } from '@mantine/core';
 
 function LandmarkPlacer({ activeLandmark, setLandmarkPositions }) {
   const { camera, scene } = useThree();
@@ -46,6 +47,7 @@ function App() {
   const transformRef = useRef();
   const landmarkRefs = useRef([]);
 
+  const tibiaGeometry = useLoader(STLLoader, "/models/Right_Tibia.stl");
   const femurGeometry = useLoader(STLLoader, '/models/Right_Femur.stl');
 
   const handleClick = (landmarkName) => {
@@ -129,6 +131,18 @@ function App() {
         <ambientLight intensity={0.5} />
         <directionalLight position={[-5, 5, 5]} />
 
+        {/* Tibia Model */}
+        <mesh
+                geometry={tibiaGeometry}
+                scale={0.1}
+                rotation={[-0.5 * Math.PI, 0, 0]}
+                position={[10, -70, 0]}
+                castShadow
+                receiveShadow
+            >
+                <meshStandardMaterial color="lightpink" />
+            </mesh>
+
         {/* Femur Model */}
         <mesh
           ref={femurRef}
@@ -199,6 +213,7 @@ function App() {
           'Posterior Medial Pt',
           'Posterior Lateral Pt',
         ].map((landmarkName) => (
+          <Stack>
           <button
             key={landmarkName}
             onClick={() => handleClick(landmarkName)}
@@ -214,6 +229,7 @@ function App() {
           >
             {landmarkName}
           </button>
+          </Stack>
         ))}
         <button
           onClick={handleUpdate}
